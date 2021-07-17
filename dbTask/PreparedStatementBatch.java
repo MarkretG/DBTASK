@@ -2,7 +2,43 @@ package dbTask;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
+
 public class PreparedStatementBatch {
+    static ArrayList<Customer> customers=new ArrayList<>();
+    static ArrayList<Account> accounts=new ArrayList<>();
+    public static void initialCustomer()
+    {
+        customers.add(new Customer(101,"mark","mark@gmail.com",21,"7854674212"));
+        customers.add(new Customer(102,"vino","vino@gmail.com",23,"9854674221"));
+        customers.add(new Customer(103,"vijay","vijay@gmail.com",25,"6854674223"));
+        customers.add(new Customer(104,"aishu","aishu@gmail.com",21,"8854674234"));
+        customers.add(new Customer(105,"kavi","kavi@gmail.com",28,"7854674245"));
+        customers.add(new Customer(106,"kavin","kavin@gmail.com",27,"7854674256"));
+        customers.add(new Customer(107,"kalai","kalai@gmail.com",26,"7854674267"));
+        customers.add(new Customer(108,"kani","kani@gmail.com",21,"9854674278"));
+        customers.add(new Customer(109,"mani","mani@gmail.com",26,"8854674289"));
+        customers.add(new Customer(110,"vini","vini@gmail.com",27,"7854674210"));
+    }
+    public static  void initialAccountsInformation()
+    {
+        accounts.add(new Account(101,"34567891234",9000000));
+        accounts.add(new Account(102,"34567891234",8000000));
+        accounts.add(new Account(109,"34567891234",7000000));
+        accounts.add(new Account(102,"34567891234",6000000));
+        accounts.add(new Account(110,"34567891234",5000000));
+        accounts.add(new Account(102,"34567891234",4000000));
+        accounts.add(new Account(103,"34567891234",3000000));
+        accounts.add(new Account(104,"34567891234",2000000));
+        accounts.add(new Account(105,"34567891234",1000000));
+        accounts.add(new Account(101,"34567891234",8000000));
+        accounts.add(new Account(104,"34567891234",9000000));
+        accounts.add(new Account(101,"34567891234",1000000));
+        accounts.add(new Account(106,"34567891234",6000000));
+        accounts.add(new Account(107,"34567891234",5000000));
+        accounts.add(new Account(108,"34567891234",4000000));
+        
+    }
     public static void preparedStatement() {
         Connection con = null;
         PreparedStatement ps=null;
@@ -14,31 +50,22 @@ public class PreparedStatementBatch {
             con = DbConnection.getConnection();
             ps = con.prepareStatement(query);
             ps1 = con.prepareStatement(query1);
-            int[] id={101,102,103,104,105,106,107,108,109,110};
-            String[] names={"mark","vino","kavini","kalai","kani","mani","hari","dhatchu","deepak","vjay"};
-            String[] mails={"mark@gmail.com","vino@gmail.com","kavin@gmail.com","kalai@gmail.com","kani@gmail.com","mani@gmail.com","hari@gmail.com","dhatchu@gmail.com","deepak@gmail.com","vijay@gmail.com"};
-            int[]   ages={21,22,24,21,23,25,24,21,23,25};
-            String[]  phone={"7854674213","7854674713","9854674312","9854674313","7855374313","7865674313","78984674313","9854674313","8854674313","7854674214"};
-
-            int[] ids={101,102,102,103,105,106,107,108,109,110,101,102,103,104,105};
-            int[]   balance={8000000,1000000,2000000,5000000,4000000,6000000,1000000,7000000,2000000,3000000,6000000,1000000,7000000,2000000,3000000};
-            String[]  account={"78546742131","78546747132","79546743133","98546743134","78553743139","78656743131","78984674313","98546743139","88546743135","48546742146","48546742131","48546747139","59546743136","48546743132","38553743135"};
-
-
-            for (int i = 0; i < id.length; i++) {
-                ps.setInt(1,id[i]);
-                ps.setString(2, names[i]);
-                ps.setString(3,mails[i]);
-                ps.setInt(4,ages[i]);
-                ps.setString(5,phone[i]);
+            int count=0;
+            for(Customer customer:customers)
+            {
+                ps.setInt(1,customer.getCustomer_id());
+                ps.setString(2,customer.getName());
+                ps.setString(3,customer.getMail());
+                ps.setInt(4,customer.getAge());
+                ps.setString(5, customer.getPhone());
                 ps.addBatch();
             }
             ps.executeBatch();
-
-            for (int i = 0; i < ids.length; i++) {
-                ps1.setInt(1,ids[i]);
-                ps1.setString(2, account[i]);
-                ps1.setInt(3,balance[i]);
+            for (Account account:accounts)
+            {
+                ps1.setInt(1,account.getCustomer_id());
+                ps1.setString(2,account.getAccountNo());
+                ps1.setInt(3,account.getBalance());
                 ps1.addBatch();
             }
             ps1.executeBatch();
