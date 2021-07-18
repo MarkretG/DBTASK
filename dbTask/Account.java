@@ -1,12 +1,17 @@
 package dbTask;
 public class Account {
     int customer_id;
-    String accountNo;
+    String account_no;
     int balance;
 
-    public Account(int customer_id, String accountNo, int balance) {
+    public Account(int customer_id, String account_no, int balance) {
         this.customer_id = customer_id;
-        this.accountNo = accountNo;
+        this.account_no = account_no;
+        this.balance = balance;
+    }
+
+    public Account(int customer_id, int balance) {
+        this.customer_id = customer_id;
         this.balance = balance;
     }
 
@@ -18,12 +23,12 @@ public class Account {
         this.customer_id = customer_id;
     }
 
-    public String getAccountNo() {
-        return accountNo;
+    public String getAccount_no() {
+        return account_no;
     }
 
-    public void setAccountNo(String accountNo) {
-        this.accountNo = accountNo;
+    public void setAccount_no(String account_no) {
+        this.account_no = account_no;
     }
 
     public int getBalance() {

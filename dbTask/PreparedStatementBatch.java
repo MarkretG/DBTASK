@@ -1,12 +1,17 @@
 package dbTask;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-
+import java.util.HashMap;
 public class PreparedStatementBatch {
+
     static ArrayList<Customer> customers=new ArrayList<>();
     static ArrayList<Account> accounts=new ArrayList<>();
+    static HashMap<String,Account> accountHashMap=new HashMap<>();
+    static HashMap<Integer,HashMap<String,Account>> info=new HashMap<>();
+    static HashMap<Integer,Customer> customerHashmap=new HashMap<>();
     public static void initialCustomer()
     {
         customers.add(new Customer(101,"mark","mark@gmail.com",21,"7854674212"));
@@ -22,36 +27,36 @@ public class PreparedStatementBatch {
     }
     public static  void initialAccountsInformation()
     {
-        accounts.add(new Account(101,"34567891234",9000000));
-        accounts.add(new Account(102,"34567891234",8000000));
-        accounts.add(new Account(109,"34567891234",7000000));
+        accounts.add(new Account(101,"44567891231",9000000));
+        accounts.add(new Account(102,"34567891232",8000000));
+        accounts.add(new Account(109,"44567891233",7000000));
         accounts.add(new Account(102,"34567891234",6000000));
-        accounts.add(new Account(110,"34567891234",5000000));
-        accounts.add(new Account(102,"34567891234",4000000));
-        accounts.add(new Account(103,"34567891234",3000000));
-        accounts.add(new Account(104,"34567891234",2000000));
-        accounts.add(new Account(105,"34567891234",1000000));
-        accounts.add(new Account(101,"34567891234",8000000));
-        accounts.add(new Account(104,"34567891234",9000000));
-        accounts.add(new Account(101,"34567891234",1000000));
-        accounts.add(new Account(106,"34567891234",6000000));
-        accounts.add(new Account(107,"34567891234",5000000));
-        accounts.add(new Account(108,"34567891234",4000000));
-        
+        accounts.add(new Account(110,"34567891235",5000000));
+        accounts.add(new Account(102,"34567891236",4000000));
+        accounts.add(new Account(103,"64567891237",3000000));
+        accounts.add(new Account(104,"34567891238",2000000));
+        accounts.add(new Account(105,"74567891239",1000000));
+        accounts.add(new Account(101,"34567891223",8000000));
+        accounts.add(new Account(104,"44567891234",9000000));
+        accounts.add(new Account(101,"53567891234",1000000));
+        accounts.add(new Account(106,"65567891234",6000000));
+        accounts.add(new Account(107,"23567891234",5000000));
+        accounts.add(new Account(108,"49567891234",4000000));
+
     }
     public static void preparedStatement() {
         Connection con = null;
         PreparedStatement ps=null;
         PreparedStatement ps1=null;
         String query = "insert into customer_info (customer_id, Name,mail,Age,phone) values (?,?,?,?,?)";
-        String query1 = "insert into account-info (customer_id,AccountNo,Balance) values (?,?,?)";
+        String query1 = "insert into account_info (customer_id,account_no,Balance) values (?,?,?)";
 
         try {
             con = DbConnection.getConnection();
             ps = con.prepareStatement(query);
             ps1 = con.prepareStatement(query1);
-            int count=0;
-            for(Customer customer:customers)
+
+           /* for(Customer customer:customers)
             {
                 ps.setInt(1,customer.getCustomer_id());
                 ps.setString(2,customer.getName());
@@ -61,14 +66,34 @@ public class PreparedStatementBatch {
                 ps.addBatch();
             }
             ps.executeBatch();
-            for (Account account:accounts)
+
+            */
+
+            /*for (Account account:accounts)
             {
                 ps1.setInt(1,account.getCustomer_id());
-                ps1.setString(2,account.getAccountNo());
+                ps1.setString(2,account.getAccount_no());
                 ps1.setInt(3,account.getBalance());
                 ps1.addBatch();
             }
             ps1.executeBatch();
+
+             */
+            ResultSet rs=ps.executeQuery(query);
+            ResultSet rs1= ps1.executeQuery(query1);
+
+
+            while (rs1.next())
+            {
+               Account a= new Account(rs1.getInt(1),rs1.getInt(3));
+                accountHashMap.put(rs1.getString(2),a);
+            }
+            while (rs.next())
+            {
+                Customer c=new Customer(rs.getString(2),rs.getString(3),rs.getInt(4),rs.getString(5));
+                info.put(rs.getInt(1),accountHashMap);
+                customerHashmap.put(rs.getInt(1),c);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -84,3 +109,21 @@ public class PreparedStatementBatch {
 
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

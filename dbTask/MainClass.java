@@ -1,11 +1,10 @@
 package dbTask;
 public class MainClass {
     public static void main(String[] args){
-         DbConnection.getConnection();
+        DbConnection.getConnection();
         PreparedStatementBatch.initialCustomer();
         PreparedStatementBatch.initialAccountsInformation();
         PreparedStatementBatch.preparedStatement();
-
-        
+        ResultSetClass.getResult();
     }
 }

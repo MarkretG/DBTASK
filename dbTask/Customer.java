@@ -11,6 +11,14 @@ public class Customer {
         this.age = age;
         this.phone = phone;
     }
+
+    public Customer(String name, String mail, int age, String phone) {
+        Name = name;
+        Mail = mail;
+        this.age = age;
+        this.phone = phone;
+    }
+
     public int getCustomer_id() {
         return customer_id;
     }
