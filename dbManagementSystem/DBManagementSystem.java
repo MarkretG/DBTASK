@@ -47,6 +47,7 @@ public class DBManagementSystem {
                                 GetInsertRowsInformationForAccountTable.getInsertRowsInformationForAccountTable();
                                 ResultSetAreStoredInHashMap.accountTableResultSetAreStoredInHashMap();
                                 ResultSetAreStoredInHashMap.customerTableResultSetAreStoredInHashMap();
+                                break;
                             case 3:
                                 System.out.println("updated");
                                 end = false;
