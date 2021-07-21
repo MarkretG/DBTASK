@@ -38,18 +38,21 @@ public class DBManagementSystem {
                     boolean end=true;
                     while (end) {
                         int ch = sc.nextInt();
-                        if (ch == 1) {
-                            GetInsertRowsInformationForCustomerTable.getInsertRowsInformationForCustomerTable();
-                            ResultSetAreStoredInHashMap.customerTableResultSetAreStoredInHashMap();
-                        } else if (ch == 2) {
-                            GetInsertRowsInformationForAccountTable.getInsertRowsInformationForAccountTable();
-                            ResultSetAreStoredInHashMap.accountTableResultSetAreStoredInHashMap();
-                            ResultSetAreStoredInHashMap.customerTableResultSetAreStoredInHashMap();
-                        } else
-                            System.out.println("updated");
-                            end = false;
+                        switch (ch) {
+                            case 1:
+                                GetInsertRowsInformationForCustomerTable.getInsertRowsInformationForCustomerTable();
+                                ResultSetAreStoredInHashMap.customerTableResultSetAreStoredInHashMap();
+                                break;
+                            case 2:
+                                GetInsertRowsInformationForAccountTable.getInsertRowsInformationForAccountTable();
+                                ResultSetAreStoredInHashMap.accountTableResultSetAreStoredInHashMap();
+                                ResultSetAreStoredInHashMap.customerTableResultSetAreStoredInHashMap();
+                            case 3:
+                                System.out.println("updated");
+                                end = false;
+                        }
                     }
-
+                   
                     break;
 
                 case 4:
