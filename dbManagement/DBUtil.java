@@ -4,8 +4,7 @@ import customerInfo.Customer;
 import java.sql.*;
 import java.util.HashMap;
 public class DBUtil {
-    static public HashMap<Long, Account> accountHashMap = new HashMap<>();
-    static public HashMap<Integer, HashMap<Long, Account>> info = new HashMap<>();
+    static public HashMap<Integer, HashMap<Long,Account>> info = new HashMap<>();
     static public HashMap<Integer, Customer> customerHashmap = new HashMap<>();
     public static Connection getConnection() {
         String url="jdbc:mysql://localhost/info";
@@ -105,7 +104,6 @@ public class DBUtil {
                 c.setAge(rs.getInt(4));
                 c.setPhone(rs.getLong(5));
                 customerHashmap.put(rs.getInt(1), c);
-                info.put(rs.getInt(1), accountHashMap);
             }
 
         } catch (SQLException e) {
@@ -131,12 +129,16 @@ public class DBUtil {
             ps = con.createStatement();
             rs = ps.executeQuery(query);
             while (rs.next()) {
-                //System.out.println(rs1.getInt(1)+":"+rs1.getLong(2)+":"+rs1.getInt(3));
                 Account a = new Account();
                 a.setCustomer_id(rs.getInt(1));
                 a.setAccount_no(rs.getLong(2));
                 a.setBalance(rs.getInt(3));
-                accountHashMap.put(rs.getLong(2), a);
+                HashMap accountHashMap=info.get(rs.getInt(1));
+                if (accountHashMap==null) {
+                    accountHashMap = new HashMap<Long,Account>();
+                }
+                accountHashMap.put(rs.getLong(2),a);
+                info.put(rs.getInt(1),accountHashMap);
             }
 
         }

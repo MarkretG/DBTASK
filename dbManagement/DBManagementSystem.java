@@ -10,8 +10,8 @@ public class DBManagementSystem {
         Connection con=DBUtil.getConnection();
         System.out.println("welcome to db Management system");
         System.out.println("Initially insert all rows in customer table and Account table");
-        GetUtilCustomer.getInfo();
-        GetUtilAccount.getInfo();
+         CustomerManagement.getInfoCustomer();
+         AccountManagement.getInfoAccount();
         DBUtil.getAccount();
         DBUtil.getCustomer();
         System.out.println("1.account info for given customer_id\n2.account info for given name\n3.Do you want to insert additional rows\n4.exit");
@@ -23,14 +23,14 @@ public class DBManagementSystem {
                 case 1:
                     System.out.println("enter customer id");
                     int id = sc.nextInt();
-                    GetUtilAccount.getAccountInfo(id);
+                    AccountManagement.getAccountInfo(id);
                     break;
                 case 2:
                     System.out.println("enter name");
                     sc.nextLine();
                     String name = sc.nextLine();
-                    int givenId=GetUtilCustomer.getId(name);
-                    GetUtilAccount.getAccountInfo(givenId);
+                    int givenId=CustomerManagement.getId(name);
+                    AccountManagement.getAccountInfo(givenId);
                     break;
                 case 3:
                     System.out.println("1.Do you want insert row in customer table\n2.Do you want to insert row in accountTable\n3.exit");
@@ -39,11 +39,11 @@ public class DBManagementSystem {
                         int ch = sc.nextInt();
                         switch (ch) {
                             case 1:
-                                GetUtilCustomer.getInfo();
+                                CustomerManagement.getInfoCustomer();
                                 DBUtil.getCustomer();
                                 break;
                             case 2:
-                                GetUtilAccount.getInfo();
+                                AccountManagement.getInfoAccount();
                                 DBUtil.getAccount();
                                 DBUtil.getCustomer();
                                 break;
