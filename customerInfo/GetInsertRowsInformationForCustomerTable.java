@@ -1,7 +1,5 @@
 package customerInfo;
 import dbManagement.InsertRowsInCustomerTable;
-import dbManagement.ResultSetAreStoredInHashMap;
-
 import java.util.Scanner;
 public class GetInsertRowsInformationForCustomerTable {
     static Scanner sc = new Scanner(System.in);
