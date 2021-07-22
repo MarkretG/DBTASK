@@ -1,19 +1,16 @@
 package dbManagement;
 import accountInfo.*;
 import customerInfo.*;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.Scanner;
 public class DBManagementSystem {
     static Scanner sc=new Scanner(System.in);
     public static void main(String[] args) {
-        Connection con=DBUtil.getConnection();
         System.out.println("welcome to db Management system");
         System.out.println("Initially insert all rows in customer table and Account table");
-         CustomerManagement.getInfoCustomer();
-         AccountManagement.getInfoAccount();
-        DBUtil.getAccount();
+        CustomerManagement.setCustomerInfo();
+        AccountManagement.setAccountInfo();
         DBUtil.getCustomer();
+        DBUtil.getAccount();
         System.out.println("1.account info for given customer_id\n2.account info for given name\n3.Do you want to insert additional rows\n4.exit");
         while (true)
         {
@@ -39,13 +36,12 @@ public class DBManagementSystem {
                         int ch = sc.nextInt();
                         switch (ch) {
                             case 1:
-                                CustomerManagement.getInfoCustomer();
+                                CustomerManagement.setCustomerInfo();
                                 DBUtil.getCustomer();
                                 break;
                             case 2:
-                                AccountManagement.getInfoAccount();
+                                AccountManagement.setAccountInfo();
                                 DBUtil.getAccount();
-                                DBUtil.getCustomer();
                                 break;
                             case 3:
                                 System.out.println("updated");
@@ -55,16 +51,7 @@ public class DBManagementSystem {
                     break;
 
                 case 4:
-                    if(con!=null)
-                    {
-                        try {
-                            con.close();
-                        }
-                        catch (SQLException e)
-                        {
-                            e.printStackTrace();
-                        }
-                    }
+                    DBUtil.closeConnection();
                     System.exit(0);
             }
         }

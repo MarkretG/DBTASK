@@ -4,30 +4,30 @@ import customerInfo.Customer;
 import java.sql.*;
 import java.util.HashMap;
 public class DBUtil {
+    static Connection con=null;
     static public HashMap<Integer, HashMap<Long,Account>> info = new HashMap<>();
     static public HashMap<Integer, Customer> customerHashmap = new HashMap<>();
     public static Connection getConnection() {
-        String url="jdbc:mysql://localhost/info";
-        String uname="root";
-        String pass="Password@1";
-        Connection con=null;
-        try {
-            // load the Driver Class
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            // create the connection now
-           con = DriverManager.getConnection(url,uname,pass);
-        }catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        catch (SQLException e)
-        {
-            e.printStackTrace();
-        }
+            String url = "jdbc:mysql://localhost/info";
+            String uname = "root";
+            String pass = "Password@1";
+            try {
+                if(con==null) {
+                    // load the Driver Class
+                    Class.forName("com.mysql.cj.jdbc.Driver");
+                    // create the connection now
+                    con = DriverManager.getConnection(url, uname, pass);
+                }
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
 
         return con;
     }
 
-    public static void setRowsAccount(int customer_id,long account_no,int balance)
+    public static void insertRowsAccount(int customer_id,long account_no,int balance)
     {
         Account account=new Account();
         account.setCustomer_id(customer_id);
@@ -56,7 +56,7 @@ public class DBUtil {
                 }
         }
     }
-    public static void setRowsCustomer(int customer_id,String name,String mail,int age,long phone)
+    public static void insertRowsCustomer(int customer_id,String name,String mail,int age,long phone)
     {
         Customer customer=new Customer();
         customer.setCustomer_id(customer_id);
@@ -79,13 +79,13 @@ public class DBUtil {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            if (ps!=null)
+            if (ps!=null) {
                 try {
                     ps.close();
-                }
-                catch (SQLException e) {
+                } catch (SQLException e) {
                     e.printStackTrace();
                 }
+            }
         }
     }
     public static void getCustomer() {
@@ -110,14 +110,14 @@ public class DBUtil {
             e.printStackTrace();
         } finally {
 
-            if ((ps != null && rs != null))
+            if ( (rs != null)||(ps!=null)) {
                 try {
-                    ps.close();
                     rs.close();
+                    ps.close();
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
-
+            }
         }
     }
     public static void getAccount() {
@@ -148,16 +148,28 @@ public class DBUtil {
             e.printStackTrace();
         } finally
         {
-
-            if ((ps!=null&&rs!=null))
+            if ((rs!=null)||(ps!=null)) {
                 try {
-                    ps.close();
                     rs.close();
-                }
-                catch (SQLException e) {
+                    ps.close();
+                } catch (SQLException e) {
                     e.printStackTrace();
                 }
+            }
 
+        }
+    }
+    public static void closeConnection()
+    {
+        if(con!=null)
+        {
+            try {
+                con.close();
+            }
+            catch (SQLException e)
+            {
+                e.printStackTrace();
+            }
         }
     }
 }
