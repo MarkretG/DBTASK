@@ -9,6 +9,8 @@ public class DBManagementSystem {
         System.out.println("Initially insert all rows in customer table and Account table");
         CustomerManagement.setCustomerInfo();
         AccountManagement.setAccountInfo();
+        DBUtil.getCustomer();
+        DBUtil.getAccount();
         System.out.println("1.account info for given customer_id\n2.account info for given name\n3.Do you want to insert additional rows\n4.exit");
         while (true)
         {
@@ -35,6 +37,7 @@ public class DBManagementSystem {
                         switch (ch) {
                             case 1:
                                 CustomerManagement.setCustomerInfo();
+                                DBUtil.getCustomer();
                                 break;
                             case 2:
                                 AccountManagement.setAccountInfo();

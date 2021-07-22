@@ -36,39 +36,16 @@ public class DBUtil {
         account.setAccount_no(account_no);
         account.setBalance(balance);
         PreparedStatement ps=null;
-        PreparedStatement ps1=null;
-        ResultSet rs=null;
         String query = "insert into account_info(customer_id,account_no,balance) values(?,?,?)";
-        String query1="select * from where customer_id=?";
         try {
             Connection con = DBUtil.getConnection();
             ps = con.prepareStatement(query);
-            ps1=con.prepareStatement(query1);
             ps.setInt(1,account.getCustomer_id());
             ps.setLong(2,account.getAccount_no());
             ps.setInt(3,account.getBalance());
             ps.addBatch();
             ps.executeBatch();
-            ps1.setInt(1,account.getCustomer_id());
-            rs=ps1.executeQuery();
 
-            if(info.containsKey(customer_id))
-            {
-                info.remove(customer_id);
-            }
-
-            while (rs.next()) {
-                Account a = new Account();
-                a.setCustomer_id(rs.getInt(1));
-                a.setAccount_no(rs.getLong(2));
-                a.setBalance(rs.getInt(3));
-                HashMap accountHashMap = info.get(rs.getInt(1));
-                if (accountHashMap == null) {
-                    accountHashMap = new HashMap<Long, Account>();
-                }
-                accountHashMap.put(rs.getLong(2), a);
-                info.put(rs.getInt(1), accountHashMap);
-            }
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -90,14 +67,11 @@ public class DBUtil {
         customer.setAge(age);
         customer.setPhone(phone);
         PreparedStatement ps=null;
-        PreparedStatement ps1=null;
         ResultSet rs=null;
         String query = "insert into customer_info(customer_id,name,mail,age,phone) values(?,?,?,?,?)";
-        String query1="select * from customer_info where customer_id=?";
         try {
             Connection con = DBUtil.getConnection();
             ps = con.prepareStatement(query);
-            ps1=con.prepareStatement(query1);
             ps.setInt(1,customer.getCustomer_id());
             ps.setString(2,customer.getName());
             ps.setString(3,customer.getMail());
@@ -105,16 +79,10 @@ public class DBUtil {
             ps.setLong(5,customer.getPhone());
             ps.addBatch();
             ps.executeBatch();
-            ps1.setInt(1,customer_id);
-            rs=ps1.executeQuery();
-            while (rs.next())
-            {
-                customerHashmap.put(rs.getInt(1),customer);
-            }
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            if ((rs!=null)||(ps!=null)) {
+            if (ps!=null) {
                 try {
                     rs.close();
                     ps.close();
@@ -124,14 +92,13 @@ public class DBUtil {
             }
         }
     }
-  /*  public static void getCustomer(int customer_id) {
-        PreparedStatement ps = null;
+   public static void getCustomer() {
+        Statement ps = null;
         ResultSet rs = null;
-        String query = "select * from  customer_info where customer_id=?";
+        String query = "select * from  customer_info";
         try {
             Connection con = DBUtil.getConnection();
-            ps = con.prepareStatement(query);
-            ps.setInt(1,customer_id);
+            ps = con.createStatement();
             rs = ps.executeQuery(query);
             while (rs.next()) {
                 Customer c = new Customer();
@@ -158,34 +125,27 @@ public class DBUtil {
         }
     }
 
-   */
-    /*public static void getAccount() {
+    public static void getAccount() {
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String query = "select * from  account_info where customer_id=?";
+        String query = "select * from  account_info";
         try {
             Connection con = DBUtil.getConnection();
             ps = con.prepareStatement(query);
-            ps.setInt(1,customer_id);
             rs = ps.executeQuery(query);
-            if(DBUtil.info.containsKey(customer_id))
-            {
-                DBUtil.info.remove(customer_id);
-            }
 
-                while (rs.next()) {
-                    Account a = new Account();
-                    a.setCustomer_id(rs.getInt(1));
-                    a.setAccount_no(rs.getLong(2));
-                    a.setBalance(rs.getInt(3));
-                    HashMap accountHashMap = info.get(rs.getInt(1));
-                    if (accountHashMap == null) {
-                        accountHashMap = new HashMap<Long, Account>();
-                    }
-                    accountHashMap.put(rs.getLong(2), a);
-                    info.put(rs.getInt(1), accountHashMap);
-                }
-
+                   while (rs.next()) {
+                       Account a=new Account();
+                       a.setCustomer_id(rs.getInt(1));
+                       a.setAccount_no(rs.getLong(2));
+                       a.setBalance(rs.getInt(3));
+                       HashMap accountHashMap = info.get(rs.getInt(1));
+                       if (accountHashMap == null) {
+                           accountHashMap = new HashMap<Long, Account>();
+                       }
+                       accountHashMap.put(rs.getLong(2), a);
+                       info.put(rs.getInt(1), accountHashMap);
+                   }
 
         }
 
@@ -206,7 +166,7 @@ public class DBUtil {
         }
     }
 
-     */
+
     public static void closeConnection()
     {
         if(con!=null)
