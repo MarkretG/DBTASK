@@ -8,11 +8,11 @@ public class DBUtil {
     static public HashMap<Integer, HashMap<Long,Account>> info = new HashMap<>();
     static public HashMap<Integer, Customer> customerHashmap = new HashMap<>();
     public static Connection getConnection() {
-            String url = "jdbc:mysql://localhost/info";
-            String uname = "root";
-            String pass = "Password@1";
             try {
                 if(con==null) {
+                    String url = "jdbc:mysql://localhost/info";
+                    String uname = "root";
+                    String pass = "Password@1";
                     // load the Driver Class
                     Class.forName("com.mysql.cj.jdbc.Driver");
                     // create the connection now
