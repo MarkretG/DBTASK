@@ -46,13 +46,13 @@ public class DBUtil {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            if (ps!=null)
+            if (ps!=null) {
                 try {
                     ps.close();
-                }
-                catch (SQLException e) {
+                } catch (SQLException e) {
                     e.printStackTrace();
                 }
+            }
         }
     }
     public static void insertRowsCustomer(Customer customer)
