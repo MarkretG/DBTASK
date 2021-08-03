@@ -1,12 +1,13 @@
 package dbManagement;
-import accountInfo.Account;
-import customerInfo.Customer;
+import accountInfo.*;
+import customerInfo.*;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 public class DBUtil {
     static Connection con=null;
-    static public HashMap<Long, HashMap<Long,Account>> info = new HashMap<>();
-    static public HashMap<Long, Customer> customerHashmap = new HashMap<>();
+      HashMap<Long, HashMap<Long,Account>> info = new HashMap<>();
+      HashMap<Long, Customer> customerHashmap = new HashMap<>();
     public static Connection getConnection() {
                 if(con==null)
                 {
@@ -19,9 +20,11 @@ public class DBUtil {
                     // create the connection now
                     con = DriverManager.getConnection(url, uname, pass);
                    }
+
                     catch (ClassNotFoundException e) {
                         e.printStackTrace();
-                    } catch (SQLException e) {
+                    }
+                    catch (SQLException e) {
                         e.printStackTrace();
                     }
                 }
@@ -43,7 +46,9 @@ public class DBUtil {
             ps.executeBatch();
 
 
-        } catch (SQLException e) {
+        }
+
+        catch (SQLException e) {
             e.printStackTrace();
         } finally {
             if (ps!=null) {
@@ -54,7 +59,10 @@ public class DBUtil {
                 }
             }
         }
+
     }
+
+
     public static void insertRowsCustomer(Customer customer)
     {
         PreparedStatement ps=null;
@@ -81,17 +89,17 @@ public class DBUtil {
             }
         }
     }
-   public static void customerInfo() {
-        for (Customer customer:DBManagementSystem.customers)
+   public  void customerInfo() {
+        for (Customer customer:customers)
         {
             customerHashmap.put(customer.getCustomer_id(),customer);
         }
-        DBManagementSystem.customers.clear();
+        customers.clear();
 
    }
 
 
-    public static void accountInfo() {
+    public void accountInfo(){
         PreparedStatement ps = null;
         ResultSet rs = null;
         String query = "select * from  account_info";
@@ -113,7 +121,7 @@ public class DBUtil {
                        info.put(rs.getLong(1), accountHashMap);
                    }
 
-        }
+           }
 
         catch (SQLException e) {
             e.printStackTrace();
@@ -131,13 +139,70 @@ public class DBUtil {
         }
     }
 
-    public static long getId(String name) {
+    public  long getId(String name) {
         for (Customer customer : customerHashmap.values()) {
             if (customer.getName().equals(name)) {
                 return customer.getCustomer_id();
             }
         }
         return 0;
+    }
+    public  void accountDetails(long id)
+    {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        String query = "select * from account_info where customer_id=?";
+        info.remove(id);
+        HashMap accountInfo=info.get(id);
+        if(accountInfo==null)
+        {
+            try {
+                Connection con = DBUtil.getConnection();
+                ps = con.prepareStatement(query);
+                ps.setLong(1, id);
+                rs = ps.executeQuery();
+                while (rs.next())
+                {
+                    Account a = new Account();
+                    a.setCustomer_id(rs.getInt(1));
+                    a.setAccount_no(rs.getLong(2));
+                    a.setBalance(rs.getInt(3));
+                    accountInfo = info.get(rs.getLong(1));
+                    if (accountInfo == null)
+                    {
+                        accountInfo= new HashMap<Long, Account>();
+                    }
+                    accountInfo.put(rs.getLong(2), a);
+                    info.put(id, accountInfo);
+                }
+                if (accountInfo==null) {
+                    System.out.println("Info does not exist in the table");
+                }
+                else {
+                    System.out.println(info.get(id));
+                }
+
+            }
+            catch (SQLException e)
+            {
+                e.printStackTrace();
+            }
+            finally {
+                if ((rs != null) || (ps != null))
+                {
+                    try {
+                        rs.close();
+                        ps.close();
+                    }
+                    catch (SQLException e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+
+            }
+        }
+
     }
 
     public static void closeConnection()

@@ -4,45 +4,46 @@ import customerInfo.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 public class DBManagementSystem {
-    static Scanner sc=new Scanner(System.in);
-    static ArrayList<Customer> customers=new ArrayList<>();
+    ArrayList<Customer> customers=new ArrayList<>();
     public static void main(String[] args) {
+        Scanner scanner=new Scanner(System.in);
+        DBUtil dbUtil=new DBUtil();
         System.out.println("welcome to db Management system");
         System.out.println("Initially insert all rows in customer table and Account table");
-        DBManagementSystem.setCustomerInfo();
-        DBManagementSystem.setAccountInfo();
-        DBUtil.customerInfo();
-        DBUtil.accountInfo();
+        DBManagementSystem.setCustomerInfo(scanner);
+        DBManagementSystem.setAccountInfo(scanner);
+        dbUtil.customerInfo();
+        dbUtil.accountInfo();
         System.out.println("1.account info for given customer_id\n2.account info for given name\n3.Do you want to insert additional rows\n4.exit");
         while (true)
         {
-            int choice=sc.nextInt();
+            int choice=scanner.nextInt();
             switch (choice)
             {
                 case 1:
                     System.out.println("enter customer id");
-                    int id = sc.nextInt();
-                    AccountManagement.getAccountInfo(id);
+                    long id = scanner.nextInt();
+                    dbUtil.accountDetails(id);
                     break;
                 case 2:
                     System.out.println("enter name");
-                    sc.nextLine();
-                    String name = sc.nextLine();
-                    long givenId=DBUtil.getId(name);
-                    AccountManagement.getAccountInfo(givenId);
+                    scanner.nextLine();
+                    String name = scanner.nextLine();
+                    long givenId=dbUtil.getId(name);
+                    dbUtil.accountDetails(givenId);
                     break;
                 case 3:
                     System.out.println("1.Do you want insert row in customer table\n2.Do you want to insert row in accountTable\n3.exit");
                     boolean end=true;
                     while (end) {
-                        int ch = sc.nextInt();
+                        int ch = scanner.nextInt();
                         switch (ch) {
                             case 1:
-                                DBManagementSystem.setCustomerInfo();
-                                DBUtil.customerInfo();
+                                DBManagementSystem.setCustomerInfo(scanner);
+                                dbUtil.customerInfo();
                                 break;
                             case 2:
-                                DBManagementSystem.setAccountInfo();
+                                DBManagementSystem.setAccountInfo(scanner);
                                 break;
                             case 3:
                                 System.out.println("updated");
@@ -53,12 +54,12 @@ public class DBManagementSystem {
 
                 case 4:
                     DBUtil.closeConnection();
-                    sc.close();
+                    scanner.close();
                     System.exit(0);
             }
         }
     }
-    public static void setCustomerInfo() {
+    public static void setCustomerInfo(Scanner sc) {
         System.out.println("How many number of rows");
         int rows=sc.nextInt();
         for (int i = 0; i < rows; i++) {
@@ -84,7 +85,7 @@ public class DBManagementSystem {
         }
         System.out.println("successfully inserted in customer table");
     }
-    public  static void setAccountInfo()
+    public  static void setAccountInfo(Scanner sc)
     {
         System.out.println("How many number of rows");
         int rows=sc.nextInt();
@@ -103,5 +104,6 @@ public class DBManagementSystem {
         }
         System.out.println("successfully inserted in account table");
     }
+
 }
 
