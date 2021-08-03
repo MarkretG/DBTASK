@@ -58,7 +58,6 @@ public class DBUtil {
     public static void insertRowsCustomer(Customer customer)
     {
         PreparedStatement ps=null;
-        ResultSet rs=null;
         String query = "insert into customer_info(customer_id,name,mail,age,phone) values(?,?,?,?,?)";
         try {
             Connection con = DBUtil.getConnection();
@@ -75,7 +74,6 @@ public class DBUtil {
         } finally {
             if (ps!=null) {
                 try {
-                    rs.close();
                     ps.close();
                 } catch (SQLException e) {
                     e.printStackTrace();
