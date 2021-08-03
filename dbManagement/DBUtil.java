@@ -2,32 +2,30 @@ package dbManagement;
 import accountInfo.*;
 import customerInfo.*;
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.HashMap;
 public class DBUtil {
     static Connection con=null;
-      HashMap<Long, HashMap<Long,Account>> info = new HashMap<>();
-      HashMap<Long, Customer> customerHashmap = new HashMap<>();
+    static HashMap<Long, HashMap<Long,Account>> info = new HashMap<>();
     public static Connection getConnection() {
-                if(con==null)
-                {
-                    try{
-                    String url = "jdbc:mysql://localhost/info";
-                    String uname = "root";
-                    String pass = "Password@1";
-                    // load the Driver Class
-                    Class.forName("com.mysql.cj.jdbc.Driver");
-                    // create the connection now
-                    con = DriverManager.getConnection(url, uname, pass);
-                   }
+        if(con==null)
+        {
+            try{
+                String url = "jdbc:mysql://localhost/info";
+                String uname = "root";
+                String pass = "Password@1";
+                // load the Driver Class
+                Class.forName("com.mysql.cj.jdbc.Driver");
+                // create the connection now
+                con = DriverManager.getConnection(url, uname, pass);
+            }
 
-                    catch (ClassNotFoundException e) {
-                        e.printStackTrace();
-                    }
-                    catch (SQLException e) {
-                        e.printStackTrace();
-                    }
-                }
+            catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+            catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
 
         return con;
     }
@@ -89,17 +87,9 @@ public class DBUtil {
             }
         }
     }
-   public  void customerInfo() {
-        for (Customer customer:customers)
-        {
-            customerHashmap.put(customer.getCustomer_id(),customer);
-        }
-        customers.clear();
-
-   }
 
 
-    public void accountInfo(){
+    public static void accountInfo(){
         PreparedStatement ps = null;
         ResultSet rs = null;
         String query = "select * from  account_info";
@@ -109,19 +99,19 @@ public class DBUtil {
             rs = ps.executeQuery(query);
             while (rs.next())
             {
-                       Account a=new Account();
-                       a.setCustomer_id(rs.getLong(1));
-                       a.setAccount_no(rs.getLong(2));
-                       a.setBalance(rs.getFloat(3));
-                       HashMap accountHashMap = info.get(rs.getLong(1));
-                       if (accountHashMap == null) {
-                           accountHashMap = new HashMap<Long, Account>();
-                       }
-                       accountHashMap.put(rs.getLong(2), a);
-                       info.put(rs.getLong(1), accountHashMap);
-                   }
+                Account a=new Account();
+                a.setCustomer_id(rs.getLong(1));
+                a.setAccount_no(rs.getLong(2));
+                a.setBalance(rs.getFloat(3));
+                HashMap accountHashMap = info.get(rs.getLong(1));
+                if (accountHashMap == null) {
+                    accountHashMap = new HashMap<Long, Account>();
+                }
+                accountHashMap.put(rs.getLong(2), a);
+                info.put(rs.getLong(1), accountHashMap);
+            }
 
-           }
+        }
 
         catch (SQLException e) {
             e.printStackTrace();
@@ -139,7 +129,7 @@ public class DBUtil {
         }
     }
 
-    public  long getId(String name) {
+    public static long getId(String name) {
         for (Customer customer : customerHashmap.values()) {
             if (customer.getName().equals(name)) {
                 return customer.getCustomer_id();
@@ -147,7 +137,7 @@ public class DBUtil {
         }
         return 0;
     }
-    public  void accountDetails(long id)
+    public static void accountDetails(long id)
     {
         PreparedStatement ps = null;
         ResultSet rs = null;

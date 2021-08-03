@@ -2,18 +2,19 @@ package dbManagement;
 import accountInfo.*;
 import customerInfo.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 public class DBManagementSystem {
-    ArrayList<Customer> customers=new ArrayList<>();
+    private static HashMap<Long, Customer> customerHashmap = new HashMap<>();
+    private static ArrayList<Customer> customers=new ArrayList<>();
     public static void main(String[] args) {
         Scanner scanner=new Scanner(System.in);
-        DBUtil dbUtil=new DBUtil();
         System.out.println("welcome to db Management system");
         System.out.println("Initially insert all rows in customer table and Account table");
         DBManagementSystem.setCustomerInfo(scanner);
         DBManagementSystem.setAccountInfo(scanner);
-        dbUtil.customerInfo();
-        dbUtil.accountInfo();
+        DBManagementSystem.customerInfo();
+        DBUtil.accountInfo();
         System.out.println("1.account info for given customer_id\n2.account info for given name\n3.Do you want to insert additional rows\n4.exit");
         while (true)
         {
@@ -23,14 +24,14 @@ public class DBManagementSystem {
                 case 1:
                     System.out.println("enter customer id");
                     long id = scanner.nextInt();
-                    dbUtil.accountDetails(id);
+                    DBUtil.accountDetails(id);
                     break;
                 case 2:
                     System.out.println("enter name");
                     scanner.nextLine();
                     String name = scanner.nextLine();
-                    long givenId=dbUtil.getId(name);
-                    dbUtil.accountDetails(givenId);
+                    long givenId=DBUtil.getId(name);
+                    DBUtil.accountDetails(givenId);
                     break;
                 case 3:
                     System.out.println("1.Do you want insert row in customer table\n2.Do you want to insert row in accountTable\n3.exit");
@@ -40,7 +41,7 @@ public class DBManagementSystem {
                         switch (ch) {
                             case 1:
                                 DBManagementSystem.setCustomerInfo(scanner);
-                                dbUtil.customerInfo();
+                                DBManagementSystem.customerInfo();
                                 break;
                             case 2:
                                 DBManagementSystem.setAccountInfo(scanner);
@@ -59,7 +60,7 @@ public class DBManagementSystem {
             }
         }
     }
-    public static void setCustomerInfo(Scanner sc) {
+    public static void  setCustomerInfo(Scanner sc) {
         System.out.println("How many number of rows");
         int rows=sc.nextInt();
         for (int i = 0; i < rows; i++) {
@@ -103,6 +104,14 @@ public class DBManagementSystem {
             DBUtil.insertRowsAccount(account);
         }
         System.out.println("successfully inserted in account table");
+    }
+    public static void customerInfo() {
+        for (Customer customer:DBManagementSystem.customers)
+        {
+            customerHashmap.put(customer.getCustomer_id(),customer);
+        }
+        DBManagementSystem.customers.clear();
+
     }
 
 }
