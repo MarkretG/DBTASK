@@ -1,6 +1,6 @@
 package customerInfo;
 public class Customer {
-    private  int customer_id;
+    private  long customer_id;
     private String name,mail;
     private int age;
     private long phone;
@@ -16,11 +16,11 @@ public class Customer {
                 '}';
     }
 
-    public int getCustomer_id() {
+    public long getCustomer_id() {
         return customer_id;
     }
 
-    public void setCustomer_id(int customer_id) {
+    public void setCustomer_id(long customer_id) {
         this.customer_id = customer_id;
     }
 

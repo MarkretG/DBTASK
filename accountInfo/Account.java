@@ -1,8 +1,8 @@
 package accountInfo;
 public class Account {
-    private  int customer_id;
+    private  long customer_id;
     private long account_no;
-    private int balance;
+    private float balance;
 
     @Override
     public String toString() {
@@ -13,11 +13,11 @@ public class Account {
                 '}';
     }
 
-    public int getCustomer_id() {
+    public long getCustomer_id() {
         return customer_id;
     }
 
-    public void setCustomer_id(int customer_id) {
+    public void setCustomer_id(long customer_id) {
         this.customer_id = customer_id;
     }
 
@@ -29,11 +29,11 @@ public class Account {
         this.account_no = account_no;
     }
 
-    public int getBalance() {
+    public float getBalance() {
         return balance;
     }
 
-    public void setBalance(int balance) {
+    public void setBalance(float balance) {
         this.balance = balance;
     }
 }
