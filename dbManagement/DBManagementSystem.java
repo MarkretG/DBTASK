@@ -8,7 +8,7 @@ import java.util.Scanner;
 public class DBManagementSystem {
     static HashMap<Long, Customer> customerHashmap = new HashMap<>();
     static ArrayList<Customer> customers=new ArrayList<>();
-    public static void main(String[] args) throws SQLException{
+    public static void main(String[] args) throws SQLException {
         Scanner scanner=new Scanner(System.in);
         System.out.println("welcome to db Management system");
         System.out.println("Initially insert all rows in customer table and Account table");
@@ -89,7 +89,8 @@ public class DBManagementSystem {
         }
         System.out.println("successfully inserted in customer table");
     }
-    public  static void setAccountInfoInDb(Scanner sc) throws SQLException {
+    public  static void setAccountInfoInDb(Scanner sc) throws SQLException
+    {
         System.out.println("How many number of rows");
         int rows=sc.nextInt();
         for(int i=0;i<rows;i++) {
@@ -117,3 +118,4 @@ public class DBManagementSystem {
     }
 
 }
+
