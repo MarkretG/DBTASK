@@ -7,9 +7,8 @@ import java.util.HashMap;
 public class DBUtil {
     static Connection con = null;
     GeneralResource newGeneralResource = GeneralResource.getInstance();
-    static HashMap<Long, HashMap<Long, Account>> info = new HashMap<>();
+    static HashMap<Long, HashMap<Long, Account>> accountsInfo = new HashMap<>();
     static HashMap<Long, Customer> customerHashmap = new HashMap<>();
-
     public static Connection getConnection() {
         if (con == null) {
             try {
@@ -29,8 +28,8 @@ public class DBUtil {
 
         return con;
     }
-
-    public void insertRowsAccount(ArrayList<Account> account) throws SQLException {
+    //insert rows in account table in db
+    public void insertRowsInAccountTable(ArrayList<Account> account) throws SQLException {
         Connection con = getConnection();
         try (PreparedStatement preparedStatement = con.prepareStatement("insert into account_info(customer_id,account_no,balance) values(?,?,?)")) {
             for (Account accounts : account) {
@@ -43,8 +42,8 @@ public class DBUtil {
         }
     }
 
-
-    public void insertRowsCustomer(ArrayList<Customer> customers) throws SQLException {
+    //insert rows in customer table in db
+    public void insertRowsInCustomerTable(ArrayList<Customer> customers) throws SQLException {
         Connection con =getConnection();
         try (PreparedStatement preparedStatement = con.prepareStatement("insert into customer_info(customer_id,name,mail,age,phone) values(?,?,?,?,?)")) {
             for (Customer customer : customers) {
@@ -58,8 +57,8 @@ public class DBUtil {
             preparedStatement.executeBatch();
         }
     }
-
-    public void storeCustomerInfoHashMap(ArrayList<Customer> customers) throws SQLException {
+    //customer table all rows  are stored in customer hashmap
+    public void storeCustomerInfoInCustomerHashMap(ArrayList<Customer> customers) throws SQLException {
         Connection con = getConnection();
         try (PreparedStatement preparedStatement = con.prepareStatement("select * from  customer_info where customer_id=?");
              ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -71,39 +70,39 @@ public class DBUtil {
             }
         }
     }
-
-    public void storeAccountInfoHashMap(ArrayList<Account> accounts) throws SQLException {
+    //account table all rows are stored in accounts Info hashmap
+    public void storeAccountInfoInAccountsInfoHashMap(ArrayList<Account> accounts) throws SQLException {
         Connection con = getConnection();
         try (PreparedStatement preparedStatement = con.prepareStatement("select * from  account_info where customer_id=?");
              ResultSet resultSet = preparedStatement.executeQuery()) {
             for (Account account : accounts) {
                 preparedStatement.setLong(1, account.getCustomer_id());
                 while (resultSet.next()) {
-                    HashMap accountHashMap = info.get(resultSet.getLong(1));
+                    HashMap accountHashMap = accountsInfo.get(resultSet.getLong(1));
                     if (accountHashMap == null) {
                         accountHashMap = new HashMap<Long, Account>();
                     }
                     accountHashMap.put(resultSet.getLong(2), account);
-                    info.put(resultSet.getLong(1), accountHashMap);
+                    accountsInfo.put(resultSet.getLong(1), accountHashMap);
                 }
             }
         }
     }
-
-    public void setCustomerInfoInDb() throws SQLException {
-        ArrayList<Customer> customer = newGeneralResource.getCustomerInfo();
-        insertRowsCustomer(customer);
+   //get customers info from user and insert rows in customer table and store table info in hashmap
+    public void addCustomersInfoInDb() throws SQLException {
+        ArrayList<Customer> customer = newGeneralResource.getCustomersInfo();
+        insertRowsInCustomerTable(customer);
         System.out.println("successfully insert in customer table");
-        storeCustomerInfoHashMap(customer);
+        storeCustomerInfoInCustomerHashMap(customer);
     }
-
-    public void setAccountInfoInDb() throws SQLException {
-        ArrayList<Account> account = newGeneralResource.getAccountInfo();
-        insertRowsAccount(account);
+    //get accounts info from user and insert rows in account table and store table info in hashmap
+    public void addAccountsInfoInDb() throws SQLException {
+        ArrayList<Account> account = newGeneralResource.getAccountsInfo();
+        insertRowsInAccountTable(account);
         System.out.println("successfully insert in account table");
-        storeAccountInfoHashMap(account);
+        storeAccountInfoInAccountsInfoHashMap(account);
     }
-
+    //find given customer id for given customer name and return customer_id
     public long getId(String name) {
         for (Customer customer : customerHashmap.values()) {
             if (customer.getName().equals(name)) {
@@ -112,11 +111,11 @@ public class DBUtil {
         }
         return 0;
     }
-
-    public HashMap<Long, Account> getAccountInfo(long id) {
-        return info.get(id);
+   //return value for given customer id
+   public HashMap<Long, Account> getAccountInfo(long id) {
+       return accountsInfo.get(id);
     }
-
+    //close db connection
     public void closeConnection(){
         if (con!=null)
         {
