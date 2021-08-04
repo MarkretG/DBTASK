@@ -1,3 +1,4 @@
+package dbManagement;
 import accountInfo.Account;
 import customerInfo.Customer;
 import java.util.ArrayList;
@@ -17,22 +18,23 @@ public class GeneralResource {   //singleton class
     String name;
     int row;
     long id;
-    public String getString ()
+    public String getStringFromUser()
     {
         name = scanner.nextLine();
         return name;
     }
-    public int getInt ()
+    public int getIntFromUser()
     {
         row = scanner.nextInt();
         return row;
     }
-    public long getLong ()
+    public long getLongFromUser()
     {
         id = scanner.nextLong();
         return id;
     }
-    public ArrayList<Customer> getCustomerInfo ()
+    //get input from user and add list of customer in arraylist then return arraylist
+    public ArrayList<Customer> getCustomersInfo ()
     {
         ArrayList<Customer> customers=new ArrayList<>();
         System.out.println("How many number of rows");
@@ -59,7 +61,8 @@ public class GeneralResource {   //singleton class
         }
         return customers;
     }
-    public ArrayList<Account> getAccountInfo () {
+    //get input from user and add list of accounts in arraylist then return arraylist
+    public ArrayList<Account> getAccountsInfo () {
         ArrayList<Account> accounts = new ArrayList<>();
         System.out.println("How many number of rows");
         int accountRows = scanner.nextInt();
@@ -85,3 +88,4 @@ public class GeneralResource {   //singleton class
 
 
 }
+
