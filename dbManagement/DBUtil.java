@@ -6,6 +6,7 @@ import java.util.HashMap;
 public class DBUtil {
     static Connection con = null;
     static HashMap<Long, HashMap<Long, Account>> info = new HashMap<>();
+    static HashMap<Long, Customer> customerHashmap = new HashMap<>();
     public static Connection getConnection() {
         if (con == null) {
             try {
@@ -51,13 +52,26 @@ public class DBUtil {
             ps.executeBatch();
         }
     }
-
-
-    public static void storeAccountInfoInHashMap() throws SQLException {
-        String query = "select * from  account_info";
+    public  static void storeCustomerInfoHashmap() throws SQLException
+    {
         try (Connection con = DBUtil.getConnection();
              Statement s = con.createStatement();
-             ResultSet rs = s.executeQuery(query)) {
+             ResultSet rs = s.executeQuery("select * from  customer_info")) {
+            while (rs.next()) {
+                Customer customer=new Customer();
+                customer.setCustomer_id(rs.getLong(1));
+                customer.setName(rs.getString(2));
+                customer.setMail(rs.getString(3));
+                customer.setAge(rs.getInt(4));
+                customer.setPhone(rs.getLong(5));
+                customerHashmap.put(rs.getLong(1),customer);
+            }
+        }
+    }
+    public static void storeAccountInfoHashMap() throws SQLException {
+        try (Connection con = DBUtil.getConnection();
+             Statement s = con.createStatement();
+             ResultSet rs = s.executeQuery("select * from  account_info")) {
             while (rs.next()) {
                 Account a = new Account();
                 a.setCustomer_id(rs.getLong(1));
@@ -74,7 +88,7 @@ public class DBUtil {
     }
 
     public static long getId(String name) {
-        for (Customer customer : DBManagementSystem.customerHashmap.values()) {
+        for (Customer customer :customerHashmap.values()) {
             if (customer.getName().equals(name)) {
                 return customer.getCustomer_id();
             }
