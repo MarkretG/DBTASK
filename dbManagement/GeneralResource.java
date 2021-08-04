@@ -2,9 +2,37 @@ package dbManagement;
 import accountInfo.Account;
 import customerInfo.Customer;
 import java.util.Scanner;
-public class GeneralResource {
-    Scanner scanner = new Scanner(System.in);
-    public Customer getCustomerInfo(){
+public class GeneralResource {   //singleton class
+    private static GeneralResource generalResource=null;
+    public static GeneralResource generalResource()
+    {
+        // To ensure only one instance is created
+        if (generalResource == null)
+        {
+            generalResource= new GeneralResource();
+        }
+        return generalResource;
+    }
+       Scanner scanner = new Scanner(System.in);
+       String name;
+       int row;
+       long id;
+        public String getString ()
+        {
+             name = scanner.nextLine();
+            return name;
+        }
+        public int getInt ()
+        {
+            row = scanner.nextInt();
+            return row;
+        }
+        public long getLong ()
+        {
+            id = scanner.nextLong();
+            return id;
+        }
+        public Customer getCustomerInfo () {
         System.out.println("Enter customer_id");
         long customer_id = scanner.nextLong();
         System.out.println("enter name");
@@ -24,7 +52,7 @@ public class GeneralResource {
         customer.setPhone(phone);
         return customer;
     }
-    public Account getAccountInfo(){
+        public Account getAccountInfo () {
         System.out.println("enter customer_id");
         long customer_id = scanner.nextLong();
         System.out.println("enter account number");
@@ -37,4 +65,9 @@ public class GeneralResource {
         account.setBalance(balance);
         return account;
     }
+    public  void closeScanner()
+    {
+        scanner.close();
+    }
+
 }

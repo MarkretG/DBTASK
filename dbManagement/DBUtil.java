@@ -5,6 +5,7 @@ import java.sql.*;
 import java.util.HashMap;
 public class DBUtil {
     static Connection con = null;
+    GeneralResource newGeneralResource=GeneralResource.generalResource();
     static HashMap<Long, HashMap<Long, Account>> info = new HashMap<>();
     static HashMap<Long, Customer> customerHashmap = new HashMap<>();
     public static Connection getConnection() {
@@ -27,7 +28,7 @@ public class DBUtil {
         return con;
     }
 
-    public static void insertRowsAccount(Account account) throws SQLException {
+    public  void insertRowsAccount(Account account) throws SQLException {
         try (Connection con = DBUtil.getConnection();
              PreparedStatement ps = con.prepareStatement("insert into account_info(customer_id,account_no,balance) values(?,?,?)")) {
             ps.setLong(1, account.getCustomer_id());
@@ -40,7 +41,7 @@ public class DBUtil {
     }
 
 
-    public static void insertRowsCustomer(Customer customer) throws SQLException {
+    public  void insertRowsCustomer(Customer customer) throws SQLException {
         try (Connection con = DBUtil.getConnection();
              PreparedStatement ps = con.prepareStatement("insert into customer_info(customer_id,name,mail,age,phone) values(?,?,?,?,?)")) {
             ps.setLong(1, customer.getCustomer_id());
@@ -52,7 +53,7 @@ public class DBUtil {
             ps.executeBatch();
         }
     }
-    public  static void storeCustomerInfoHashmap() throws SQLException
+    public  void storeCustomerInfoHashmap() throws SQLException
     {
         try (Connection con = DBUtil.getConnection();
              Statement s = con.createStatement();
@@ -68,7 +69,7 @@ public class DBUtil {
             }
         }
     }
-    public static void storeAccountInfoHashMap() throws SQLException {
+    public void storeAccountInfoHashMap() throws SQLException {
         try (Connection con = DBUtil.getConnection();
              Statement s = con.createStatement();
              ResultSet rs = s.executeQuery("select * from  account_info")) {
@@ -87,13 +88,31 @@ public class DBUtil {
         }
     }
 
-    public static long getId(String name) {
+    public long getId(String name) {
         for (Customer customer :customerHashmap.values()) {
             if (customer.getName().equals(name)) {
                 return customer.getCustomer_id();
             }
         }
         return 0;
+    }
+    public  void setCustomerInfoInDb(int customerRows) throws SQLException
+    {
+        for(int i=0;i<customerRows;i++)
+        {
+            Customer customer=newGeneralResource.getCustomerInfo();
+            insertRowsCustomer(customer);
+        }
+        System.out.println("successfully insert in customer table");
+    }
+    public  void setAccountInfoInDb(int accountRows) throws SQLException
+    {
+        for(int i=0;i<accountRows;i++)
+        {
+            Account account=newGeneralResource.getAccountInfo();
+            insertRowsAccount(account);
+        }
+        System.out.println("successfully insert in account table");
     }
 
     public static void getAccountInfo(long id) throws SQLException {
