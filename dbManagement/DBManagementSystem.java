@@ -1,20 +1,24 @@
 package dbManagement;
 import accountInfo.*;
 import customerInfo.*;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 public class DBManagementSystem {
-    private static HashMap<Long, Customer> customerHashmap = new HashMap<>();
-    private static ArrayList<Customer> customers=new ArrayList<>();
-    public static void main(String[] args) {
+    static HashMap<Long, Customer> customerHashmap = new HashMap<>();
+    static ArrayList<Customer> customers=new ArrayList<>();
+    public static void main(String[] args) throws SQLException{
         Scanner scanner=new Scanner(System.in);
         System.out.println("welcome to db Management system");
         System.out.println("Initially insert all rows in customer table and Account table");
-        DBManagementSystem.setCustomerInfo(scanner);
-        DBManagementSystem.setAccountInfo(scanner);
-        DBManagementSystem.customerInfo();
-        DBUtil.accountInfo();
+
+        //Get input from user so pass the Scanner object to that method. then put the data in Db
+        setCustomerInfoInDb(scanner);
+        setAccountInfoInDb(scanner);
+        System.out.println("Store table info in hashmap");
+        storeCustomerInfoInHashMap();
+        DBUtil.storeAccountInfoInHashMap();
         System.out.println("1.account info for given customer_id\n2.account info for given name\n3.Do you want to insert additional rows\n4.exit");
         while (true)
         {
@@ -24,14 +28,14 @@ public class DBManagementSystem {
                 case 1:
                     System.out.println("enter customer id");
                     long id = scanner.nextInt();
-                    DBUtil.accountDetails(id);
+                    DBUtil.getAccountInfo(id);
                     break;
                 case 2:
                     System.out.println("enter name");
                     scanner.nextLine();
                     String name = scanner.nextLine();
                     long givenId=DBUtil.getId(name);
-                    DBUtil.accountDetails(givenId);
+                    DBUtil.getAccountInfo(givenId);
                     break;
                 case 3:
                     System.out.println("1.Do you want insert row in customer table\n2.Do you want to insert row in accountTable\n3.exit");
@@ -40,11 +44,11 @@ public class DBManagementSystem {
                         int ch = scanner.nextInt();
                         switch (ch) {
                             case 1:
-                                DBManagementSystem.setCustomerInfo(scanner);
-                                DBManagementSystem.customerInfo();
+                                setCustomerInfoInDb(scanner);
+                                storeCustomerInfoInHashMap();
                                 break;
                             case 2:
-                                DBManagementSystem.setAccountInfo(scanner);
+                                setAccountInfoInDb(scanner);
                                 break;
                             case 3:
                                 System.out.println("updated");
@@ -54,13 +58,12 @@ public class DBManagementSystem {
                     break;
 
                 case 4:
-                    DBUtil.closeConnection();
                     scanner.close();
                     System.exit(0);
             }
         }
     }
-    public static void  setCustomerInfo(Scanner sc) {
+    public static void  setCustomerInfoInDb(Scanner sc) throws SQLException{
         System.out.println("How many number of rows");
         int rows=sc.nextInt();
         for (int i = 0; i < rows; i++) {
@@ -86,8 +89,7 @@ public class DBManagementSystem {
         }
         System.out.println("successfully inserted in customer table");
     }
-    public  static void setAccountInfo(Scanner sc)
-    {
+    public  static void setAccountInfoInDb(Scanner sc) throws SQLException {
         System.out.println("How many number of rows");
         int rows=sc.nextInt();
         for(int i=0;i<rows;i++) {
@@ -105,7 +107,7 @@ public class DBManagementSystem {
         }
         System.out.println("successfully inserted in account table");
     }
-    public static void customerInfo() {
+    public static void storeCustomerInfoInHashMap() {
         for (Customer customer:DBManagementSystem.customers)
         {
             customerHashmap.put(customer.getCustomer_id(),customer);
@@ -115,4 +117,3 @@ public class DBManagementSystem {
     }
 
 }
-
