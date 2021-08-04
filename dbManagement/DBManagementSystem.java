@@ -7,9 +7,13 @@ public class DBManagementSystem {
     public static void main(String[] args) throws SQLException {
         System.out.println("welcome to db Management system");
         System.out.println("get customer info for insert table in db then set rows in table");
-        setCustomerInfoInDb();
+        System.out.println("How many number of rows");
+        int customerRows=generalResource.scanner.nextInt();
+        setCustomerInfoInDb(customerRows);
         System.out.println("get account info for insert table in db then set rows in table");
-        setAccountInfoInDb();
+        System.out.println("How many number of rows");
+        int accountRows=generalResource.scanner.nextInt();
+        setAccountInfoInDb(accountRows);
         System.out.println("Store customer table info in customer hashmap");
         DBUtil.storeCustomerInfoHashmap();
         System.out.println("Store account table info in in info hashmap");
@@ -38,11 +42,15 @@ public class DBManagementSystem {
                         int ch = generalResource.scanner.nextInt();
                         switch (ch) {
                             case 1:
-                                setCustomerInfoInDb();
+                                System.out.println("How many number of rows");
+                                int rows=generalResource.scanner.nextInt();
+                                setCustomerInfoInDb(rows);
                                 DBUtil.storeCustomerInfoHashmap();
                                 break;
                             case 2:
-                                setAccountInfoInDb();
+                                System.out.println("How many number of rows");
+                                int rowsAccount=generalResource.scanner.nextInt();
+                                setAccountInfoInDb(rowsAccount);
                                 break;
                             case 3:
                                 System.out.println("updated");
@@ -57,10 +65,8 @@ public class DBManagementSystem {
             }
         }
     }
-    public  static void setCustomerInfoInDb() throws SQLException
+    public  static void setCustomerInfoInDb(int customerRows) throws SQLException
     {
-        System.out.println("How many number of rows");
-        int customerRows=generalResource.scanner.nextInt();
         for(int i=0;i<customerRows;i++)
         {
             Customer customer=generalResource.getCustomerInfo();
@@ -68,10 +74,8 @@ public class DBManagementSystem {
         }
         System.out.println("successfully insert in customer table");
     }
-    public  static void setAccountInfoInDb() throws SQLException
+    public  static void setAccountInfoInDb(int accountRows) throws SQLException
     {
-        System.out.println("How many number of rows");
-        int accountRows=generalResource.scanner.nextInt();
         for(int i=0;i<accountRows;i++)
         {
             Account account=generalResource.getAccountInfo();
