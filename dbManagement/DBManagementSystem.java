@@ -1,4 +1,4 @@
-package dbManagement;
+    package dbManagement;
 import java.sql.SQLException;
 public class DBManagementSystem {
     public static void main(String[] args) throws SQLException {
@@ -6,13 +6,9 @@ public class DBManagementSystem {
         DBUtil dbUtil=new DBUtil();
         System.out.println("welcome to db Management system");
         System.out.println("get customer info for insert table in db then set rows in table");
-        System.out.println("How many number of rows");
-        int customerRows=generalResource.getInt();
-        dbUtil.setCustomerInfoInDb(customerRows);
+        dbUtil.setCustomerInfoInDb();
         System.out.println("get account info for insert table in db then set rows in table");
-        System.out.println("How many number of rows");
-        int accountRows=generalResource.getInt();
-        dbUtil.setAccountInfoInDb(accountRows);
+        dbUtil.setAccountInfoInDb();
         System.out.println("Store customer table info in customer hashmap");
         dbUtil.storeCustomerInfoHashmap();
         System.out.println("Store account table info in in info hashmap");
@@ -43,13 +39,13 @@ public class DBManagementSystem {
                             case 1:
                                 System.out.println("How many number of rows");
                                 int rows=generalResource.getInt();
-                                dbUtil.setCustomerInfoInDb(rows);
-                                dbUtil.storeCustomerInfoHashmap();
+                                dbUtil.setCustomerInfoInDb();
+                                dbUtil.storeCustomerInfoHashMap();
                                 break;
                             case 2:
                                 System.out.println("How many number of rows");
                                 int rowsAccount=generalResource.getInt();
-                                dbUtil.setAccountInfoInDb(rowsAccount);
+                                dbUtil.setAccountInfoInDb();
                                 break;
                             case 3:
                                 System.out.println("updated");

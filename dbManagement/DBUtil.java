@@ -2,6 +2,7 @@ package dbManagement;
 import accountInfo.*;
 import customerInfo.*;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 public class DBUtil {
     static Connection con = null;
@@ -28,61 +29,69 @@ public class DBUtil {
         return con;
     }
 
-    public  void insertRowsAccount(Account account) throws SQLException {
-        try (Connection con = DBUtil.getConnection();
-             PreparedStatement ps = con.prepareStatement("insert into account_info(customer_id,account_no,balance) values(?,?,?)")) {
-            ps.setLong(1, account.getCustomer_id());
-            ps.setLong(2, account.getAccount_no());
-            ps.setFloat(3, account.getBalance());
-            ps.addBatch();
-            ps.executeBatch();
+    public  void insertRowsAccount(ArrayList<Account> account) throws SQLException {
+        Connection con = DBUtil.getConnection();
+                 try (PreparedStatement preparedStatement = con.prepareStatement("insert into account_info(customer_id,account_no,balance) values(?,?,?)")) {
+                     for (Account accounts:account)
+                     {
+                         preparedStatement.setLong(1, accounts.getCustomer_id());
+                         preparedStatement.setLong(2, accounts.getAccount_no());
+                         preparedStatement.setFloat(3, accounts.getBalance());
+                         preparedStatement.addBatch();
+                     }
+                     preparedStatement.executeBatch();
+            }
         }
 
-    }
 
-
-    public  void insertRowsCustomer(Customer customer) throws SQLException {
-        try (Connection con = DBUtil.getConnection();
-             PreparedStatement ps = con.prepareStatement("insert into customer_info(customer_id,name,mail,age,phone) values(?,?,?,?,?)")) {
-            ps.setLong(1, customer.getCustomer_id());
-            ps.setString(2, customer.getName());
-            ps.setString(3, customer.getMail());
-            ps.setInt(4, customer.getAge());
-            ps.setLong(5, customer.getPhone());
-            ps.addBatch();
-            ps.executeBatch();
+    public  void insertRowsCustomer(ArrayList<Customer> customers) throws SQLException {
+            Connection con = DBUtil.getConnection();
+             try(PreparedStatement preparedStatement = con.prepareStatement("insert into customer_info(customer_id,name,mail,age,phone) values(?,?,?,?,?)")) {
+                 for (Customer customer:customers) {
+                     preparedStatement.setLong(1, customer.getCustomer_id());
+                     preparedStatement.setString(2, customer.getName());
+                     preparedStatement.setString(3, customer.getMail());
+                     preparedStatement.setInt(4, customer.getAge());
+                     preparedStatement.setLong(5, customer.getPhone());
+                     preparedStatement.addBatch();
+                 }
+            preparedStatement.executeBatch();
         }
     }
-    public  void storeCustomerInfoHashmap() throws SQLException
+    public  void storeCustomerInfoHashMap(ArrayList<Customer> customers) throws SQLException
     {
-        try (Connection con = DBUtil.getConnection();
-             Statement s = con.createStatement();
-             ResultSet rs = s.executeQuery("select * from  customer_info")) {
+        Connection con = DBUtil.getConnection();
+
+           // try( Statement s = con.createStatement();
+            // ResultSet rs = s.executeQuery("select * from  customer_info")) {
+        try(PreparedStatement ps=con.PreparedStatement();) {
+        }
             while (rs.next()) {
-                Customer customer=new Customer();
-                customer.setCustomer_id(rs.getLong(1));
-                customer.setName(rs.getString(2));
-                customer.setMail(rs.getString(3));
-                customer.setAge(rs.getInt(4));
-                customer.setPhone(rs.getLong(5));
-                customerHashmap.put(rs.getLong(1),customer);
+                 Customer customer=new Customer();
+                 customer.setCustomer_id(rs.getLong(1));
+                 customer.setName(rs.getString(2));
+                 customer.setMail(rs.getString(3));
+                 customer.setAge(rs.getInt(4));
+                 customer.setPhone(rs.getLong(5));
+                 customerHashmap.put(rs.getLong(1),customer);
             }
         }
     }
     public void storeAccountInfoHashMap() throws SQLException {
-        try (Connection con = DBUtil.getConnection();
-             Statement s = con.createStatement();
+             Connection con = DBUtil.getConnection();
+
+             try(Statement s = con.createStatement();
              ResultSet rs = s.executeQuery("select * from  account_info")) {
             while (rs.next()) {
-                Account a = new Account();
-                a.setCustomer_id(rs.getLong(1));
-                a.setAccount_no(rs.getLong(2));
-                a.setBalance(rs.getFloat(3));
+                Account account = new Account();
+                account.setCustomer_id(rs.getLong(1));
+                account.setAccount_no(rs.getLong(2));
+                account.setBalance(rs.getFloat(3));
                 HashMap accountHashMap = info.get(rs.getLong(1));
                 if (accountHashMap == null) {
                     accountHashMap = new HashMap<Long, Account>();
                 }
-                accountHashMap.put(rs.getLong(2), a);
+                accountHashMap.put(rs.getLong(2), account);
                 info.put(rs.getLong(1), accountHashMap);
             }
         }
@@ -96,23 +105,18 @@ public class DBUtil {
         }
         return 0;
     }
-    public  void setCustomerInfoInDb(int customerRows) throws SQLException
+    public  void setCustomerInfoInDb() throws SQLException
     {
-        for(int i=0;i<customerRows;i++)
-        {
-            Customer customer=newGeneralResource.getCustomerInfo();
+            ArrayList<Customer> customer=newGeneralResource.getCustomerInfo();
             insertRowsCustomer(customer);
-        }
-        System.out.println("successfully insert in customer table");
+            System.out.println("successfully insert in customer table");
+            storeAccountInfoHashMap(customer);
     }
-    public  void setAccountInfoInDb(int accountRows) throws SQLException
+    public  void setAccountInfoInDb() throws SQLException
     {
-        for(int i=0;i<accountRows;i++)
-        {
-            Account account=newGeneralResource.getAccountInfo();
+            ArrayList<Account> account=newGeneralResource.getAccountInfo();
             insertRowsAccount(account);
-        }
-        System.out.println("successfully insert in account table");
+            System.out.println("successfully insert in account table");
     }
 
     public static void getAccountInfo(long id) throws SQLException {
