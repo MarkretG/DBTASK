@@ -1,46 +1,91 @@
 package dbManagement;
 import accountInfo.Account;
-import java.sql.SQLException;
-import java.util.HashMap;
-public class DBManagementSystem {
-    public static void main(String[] args) throws SQLException {
-        GeneralResource generalResource=GeneralResource.getInstance();
-        DBUtil dbUtil=new DBUtil();
-        System.out.println("welcome to db Management system");
-        System.out.println("1.Add rows in customer table\n2.Add rows in account table\n3.Account info for given customer_id\n4.Account info for given name\n5.exit");
-        while (true)
+import customerInfo.Customer;
+import java.util.ArrayList;
+import java.util.Scanner;
+public class GeneralResource {   //singleton class
+    private static GeneralResource singleInstance=null;
+    public static synchronized GeneralResource getInstance()
+    {
+        // To ensure only one instance is created
+        if (singleInstance == null)
         {
-            int choice=generalResource.getIntFromUser();
-            switch (choice)
-            {
-                case 1:
-                    dbUtil.storeCustomerInfoInCustomerHashMap(dbUtil.addCustomersInfoInDb());
-                    //dbUtil.addCustomersInfoInDb();
-
-                    break;
-                case 2:
-                    dbUtil.storeAccountInfoInAccountsInfoHashMap(dbUtil.addAccountsInfoInDb());
-                    //dbUtil.addAccountsInfoInDb();
-                    break;
-                case 3:
-                    System.out.println("enter customer id");
-                    long customerId = generalResource.getLongFromUser();
-                    HashMap<Long, Account> account=dbUtil.getAccountsInfoFromAccountsInfoHashMap(customerId);
-                    System.out.println(account.toString());
-                    break;
-                case 4:
-                    System.out.println("enter name");
-                    String name = generalResource.getStringFromUser();
-                    long givenId=dbUtil.getCustomerIdFromCustomerHashMap(name);
-                    HashMap<Long,Account> accounts=dbUtil.getAccountsInfoFromAccountsInfoHashMap(givenId);
-                    System.out.println(accounts.toString());
-                    break;
-                case 5:
-                    generalResource.closeScanner();
-                    dbUtil.closeConnection();
-                    System.exit(0);
-            }
+            singleInstance= new GeneralResource();
         }
+        return singleInstance;
+    }
+    Scanner scanner = new Scanner(System.in);
+    String name;
+    int row;
+    long id;
+    public String getStringFromUser()
+    {
+        name = scanner.nextLine();
+        return name;
+    }
+    public int getIntFromUser()
+    {
+        row = scanner.nextInt();
+        return row;
+    }
+    public long getLongFromUser()
+    {
+        id = scanner.nextLong();
+        return id;
+    }
+    //get input from user and add list of customer in arraylist then return arraylist
+    public ArrayList<Customer> getCustomersInfo ()
+    {
+        ArrayList<Customer> customers=new ArrayList<>();
+        System.out.println("How many number of rows");
+        int customerRows =scanner.nextInt();
+        for (int i = 0; i < customerRows; i++) {
+            System.out.println("Enter customer_id");
+            long customer_id = scanner.nextLong();
+            System.out.println("enter name");
+            scanner.nextLine();
+            String name = scanner.nextLine();
+            System.out.println("enter mail id");
+            String mail = scanner.nextLine();
+            System.out.println("enter age");
+            int age = scanner.nextInt();
+            System.out.println("enter phone Number");
+            long phone = scanner.nextLong();
+            Customer customer = new Customer();
+            customer.setCustomer_id(customer_id);
+            customer.setName(name);
+            customer.setAge(age);
+            customer.setMail(mail);
+            customer.setPhone(phone);
+            customers.add(customer);
+        }
+        return customers;
+    }
+    //get input from user and add list of accounts in arraylist then return arraylist
+    public ArrayList<Account> getAccountsInfo () {
+        ArrayList<Account> accounts = new ArrayList<>();
+        System.out.println("How many number of rows");
+        int accountRows = scanner.nextInt();
+        for (int i = 0; i < accountRows; i++) {
+            System.out.println("enter customer_id");
+            long customer_id = scanner.nextLong();
+            System.out.println("enter account number");
+            long account_no = scanner.nextLong();
+            System.out.println("enter balance");
+            float balance = scanner.nextInt();
+            Account account = new Account();
+            account.setCustomer_id(customer_id);
+            account.setAccount_no(account_no);
+            account.setBalance(balance);
+            accounts.add(account);
+        }
+        return accounts;
+    }
+    public  void closeScanner()
+    {
+        scanner.close();
     }
 
+
 }
+
