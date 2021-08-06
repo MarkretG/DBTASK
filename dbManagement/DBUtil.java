@@ -153,6 +153,15 @@ public class DBUtil {
     }
 
      */
+    public void handleNewUser() throws SQLException
+    {
+        ArrayList<Customer> customers=getCustomersInfoFromUser();
+        insertRowsInCustomerTable(customers);
+        storeCustomerInfoInCustomerHashMap(customers);
+        ArrayList<Account> account=getAccountsInfoFromUser();
+        insertRowsInAccountTable(account);
+        storeAccountInfoInAccountsInfoHashMap(account);
+    }
     //close db connection
     public void closeConnection(){
         if (con!=null)

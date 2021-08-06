@@ -1,6 +1,5 @@
 package dbManagement;
 import accountInfo.Account;
-import customerInfo.Customer;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,12 +17,7 @@ public class DBManagementSystem {
             switch (choice)
             {
                 case 1:
-                    ArrayList<Customer> customers=dbUtil.getCustomersInfoFromUser();
-                    dbUtil.insertRowsInCustomerTable(customers);
-                    dbUtil.storeCustomerInfoInCustomerHashMap(customers);
-                    ArrayList<Account> account=dbUtil.getAccountsInfoFromUser();
-                    dbUtil.insertRowsInAccountTable(account);
-                    dbUtil.storeAccountInfoInAccountsInfoHashMap(account);
+                    dbUtil.handleNewUser();
                     break;
                 case 2:
                     ArrayList<Account> accounts=dbUtil.getAccountsInfoFromUser();
