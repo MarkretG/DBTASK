@@ -8,6 +8,8 @@ public class DBManagementSystem {
     public static void main(String[] args) throws SQLException {
         GeneralResource generalResource=GeneralResource.getInstance();
         DBUtil dbUtil=new DBUtil();
+        dbUtil.initialiseCustomerTable();
+        dbUtil.initialiseAccountTable();
         System.out.println("welcome to db Management system");
         System.out.println("1.Add rows in customer table for new User\n2.Add rows in account table for existing user\n3.Account info for given customer_id\n4.Account info for given name\n5.exit");
         while (true)
@@ -22,10 +24,9 @@ public class DBManagementSystem {
                     break;
                 case 2:
                     ArrayList<Account> accounts=dbUtil.getAccountsInfoFromUser();
-                    if(dbUtil.verifyExistingCustomerForAddNewAccount(accounts)) {
-                        dbUtil.insertRowsInAccountTable(accounts);
-                        dbUtil.storeAccountInfoInAccountsInfoHashMap(accounts);
-                    }
+                    ArrayList<Account> account1=dbUtil.getExistingCustomerVerifyForAddNewAccount(accounts);
+                    dbUtil.insertRowsInAccountTable(account1);
+                    dbUtil.storeAccountInfoInAccountsInfoHashMap(account1);
                     break;
                 case 3:
                     System.out.println("enter customer id");
@@ -47,29 +48,6 @@ public class DBManagementSystem {
             }
         }
     }
-    public static  void  initialise()
-    {
-        ArrayList<Customer> customers=new ArrayList<>();
-        ArrayList<Account> accounts=new ArrayList<>();
-        Customer[] customerObj=new Customer[3];
-        customerObj[0].setCustomer_id(101);
-        customerObj[0].setName("mark");
-        customerObj[0].setMail("mark@gmail.com");
-        customerObj[0].setAge(21);
-        customerObj[0].setPhone(9987653131L);
-        customerObj[1].setCustomer_id(102);
-        customerObj[1].setName("vino");
-        customerObj[1].setMail("vino@gmail.com");
-        customerObj[1].setAge(22);
-        customerObj[1].setPhone(9987651131L);
-        customerObj[2].setCustomer_id(103);
-        customerObj[2].setName("abi");
-        customerObj[2].setMail("abik@gmail.com");
-        customerObj[2].setAge(21);
-        customerObj[2].setPhone(7787653131L);
-        customers.add(customerObj[0]);
-        customers.add(customerObj[1]);
-        customers.add(customerObj[2]);
-    }
+
 
 }
