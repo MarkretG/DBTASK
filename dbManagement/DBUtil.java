@@ -4,11 +4,13 @@ import customerInfo.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 public class DBUtil {
     static Connection con = null;
     GeneralResource newGeneralResource = GeneralResource.getInstance();
     static HashMap<Long, HashMap<Long, Account>> accountsInfo = new HashMap<>();
-    static HashMap<Long, Customer> customerHashmap = new HashMap<>();
+    static HashMap<Long, String> customerHashmap = new HashMap<>();
     public static Connection getConnection() {
         if (con == null) {
             try {
@@ -81,19 +83,13 @@ public class DBUtil {
     public void storeCustomerInfoInCustomerHashMap(ArrayList<Customer> customers) throws SQLException {
         ArrayList<Long> customerId=getCustomersIdFromCustomerList(customers);
         Connection con = getConnection();
-        try (PreparedStatement preparedStatement = con.prepareStatement("select * from  customer_info where customer_id in (?)");
+        try (PreparedStatement preparedStatement = con.prepareStatement("select from customer_id,name where customer_id in (?)");
              ResultSet resultSet = preparedStatement.executeQuery()) {
-             Array array=con.createArrayOf("BIGINT",customerId.toArray());
-             preparedStatement.setArray(1,array);
-                while (resultSet.next()) {
-                    Customer customer=new Customer();
-                    customer.setCustomer_id(resultSet.getLong(1));
-                    customer.setName(resultSet.getString(2));
-                    customer.setMail(resultSet.getString(3));
-                    customer.setAge(resultSet.getInt(4));
-                    customer.setPhone(resultSet.getLong(5));
-                    customerHashmap.put(resultSet.getLong(1), customer);
-                }
+            Array array=con.createArrayOf("BIGINT",customerId.toArray());
+            preparedStatement.setArray(1,array);
+            while (resultSet.next()) {
+                customerHashmap.put(resultSet.getLong(1),resultSet.getString(2));
+            }
         }
     }
     //account table all rows are stored in accounts Info hashmap
@@ -104,42 +100,60 @@ public class DBUtil {
              ResultSet resultSet = preparedStatement.executeQuery()) {
             Array array=con.createArrayOf("BIGINT",customerId.toArray());
             preparedStatement.setArray(1,array);
-                while (resultSet.next()) {
-                    Account account=new Account();
-                    account.setCustomer_id(resultSet.getLong(1));
-                    account.setAccount_no(resultSet.getLong(2));
-                    account.setBalance(resultSet.getFloat(3));
-                    HashMap accountHashMap = accountsInfo.get(resultSet.getLong(1));
-                    if (accountHashMap == null) {
-                        accountHashMap = new HashMap<Long, Account>();
-                    }
-                    accountHashMap.put(resultSet.getLong(2), account);
-                    accountsInfo.put(resultSet.getLong(1), accountHashMap);
+            while (resultSet.next()) {
+                Account account=new Account();
+                account.setCustomer_id(resultSet.getLong(1));
+                account.setAccount_no(resultSet.getLong(2));
+                account.setBalance(resultSet.getFloat(3));
+                HashMap accountHashMap = accountsInfo.get(resultSet.getLong(1));
+                if (accountHashMap == null) {
+                    accountHashMap = new HashMap<Long, Account>();
                 }
+                accountHashMap.put(resultSet.getLong(2), account);
+                accountsInfo.put(resultSet.getLong(1), accountHashMap);
             }
         }
+    }
 
+    public ArrayList<Customer> getCustomersInfoFromUser()
+    {
+       ArrayList<Customer> customers= newGeneralResource.getCustomersInfo();
+       return customers;
+    }
+    public ArrayList<Account> getAccountsInfoFromUser()
+    {
+        ArrayList<Account> accounts= newGeneralResource.getAccountsInfo();
+        return accounts;
+    }
     //get customers info from user and insert rows in customer table and store table info in hashmap
-    public ArrayList<Customer> addCustomersInfoInDb() throws SQLException {
-        ArrayList<Customer> customer = newGeneralResource.getCustomersInfo();
+    /*public ArrayList<Customer> addCustomersInfoInDb() throws SQLException {
+        //ArrayList<Customer> customer = newGeneralResource.getCustomersInfo();
         insertRowsInCustomerTable(customer);
         //System.out.println("successfully insert in customer table");
         //storeCustomerInfoInCustomerHashMap(customer);
         return customer;
     }
+
+     */
     //get accounts info from user and insert rows in account table and store table info in hashmap
-    public ArrayList<Account> addAccountsInfoInDb() throws SQLException {
+    /*public ArrayList<Account> addAccountsInfoInDb() throws SQLException {
         ArrayList<Account> account = newGeneralResource.getAccountsInfo();
-        insertRowsInAccountTable(account);
-        //System.out.println("successfully insert in account table");
+        for (Account account1:account) {
+            insertRowsInAccountTable(newGeneralResource.getAccountsInfo());
+        }
+        System.out.println("successfully insert in account table");
         //storeAccountInfoInAccountsInfoHashMap(account);
         return account;
     }
+
+     */
     //find given customer id for given customer name and return customer_id
     public long getCustomerIdFromCustomerHashMap(String name) {
-        for (Customer customer : customerHashmap.values()) {
-            if (customer.getName().equals(name)) {
-                return customer.getCustomer_id();
+        //Set<Long> result=new HashSet<>();
+        for (Map.Entry<Long,String> entry:customerHashmap.entrySet()) {
+            if (Objects.equals(entry.getValue(),name)) {
+                //result.add(entry.getKey());
+                return entry.getKey();
             }
         }
         return 0;
@@ -147,6 +161,24 @@ public class DBUtil {
     //return value for given customer id
     public HashMap<Long, Account> getAccountsInfoFromAccountsInfoHashMap(long id) {
         return accountsInfo.get(id);
+    }
+    public ArrayList<Account> getExistingCustomerVerifyForAddNewAccount(ArrayList<Account> accounts)
+    {
+        ArrayList<Account> accounts1=new ArrayList<>();
+        for (Account account:accounts)
+        {
+            for (Long key:customerHashmap.keySet())
+            {
+                if (account.getCustomer_id()==key)
+                {
+                   accounts1.add(account);
+                   break;
+                }
+            }
+
+        }
+        return accounts1;
+
     }
     //close db connection
     public void closeConnection(){
