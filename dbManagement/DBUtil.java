@@ -1,55 +1,51 @@
 package dbManagement;
-import accountInfo.*;
-import customerInfo.*;
+import accountInfo.Account;
+import customerInfo.Customer;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
 public class DBUtil {
-    static Connection con = null;
-    GeneralResource newGeneralResource = GeneralResource.getInstance();
-    static HashMap<Long, HashMap<Long, Account>> accountsInfo = new HashMap<>();
-    static HashMap<Long, String> customerHashmap = new HashMap<>();
+    private static Connection con = null;
+    private HashMap<Long, HashMap<Long, Account>> accountsInfo = new HashMap<>();
+    private HashMap<Long, String> customerHashmap = new HashMap<>();
     public static Connection getConnection() {
-        if (con == null) {
+        if (con!=null) {
+            return  con;
+        }
             try {
                 String url = "jdbc:mysql://localhost/info";
-                String uname = "root";
-                String pass = "Root@123";
+                String userName = "root";
+                String password = "Root@123";
                 // load the Driver Class
                 Class.forName("com.mysql.cj.jdbc.Driver");
                 // create the connection now
-                con = DriverManager.getConnection(url, uname, pass);
+                con = DriverManager.getConnection(url, userName, password);
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-        }
-
         return con;
     }
     public void initialiseCustomerTable() throws SQLException
     {
-        ArrayList<Customer> customers=newGeneralResource.initialiseCustomerInfo();
+        ArrayList<Customer> customers=GeneralResource.getInstance().getCustomersInfo();
         insertRowsInCustomerTable(customers);
         storeCustomerInfoInCustomerHashMap(customers);
     }
 
     public void initialiseAccountTable() throws SQLException
     {
-        ArrayList<Account> accounts=newGeneralResource.initialiseAccountInfo();
+        ArrayList<Account> accounts=GeneralResource.getInstance().getAccountsInfo();
         insertRowsInAccountTable(accounts);
         storeAccountInfoInAccountsInfoHashMap(accounts);
     }
     //insert rows in account table in db
     public void insertRowsInAccountTable(ArrayList<Account> account) throws SQLException {
         Connection con = getConnection();
-        try (PreparedStatement preparedStatement = con.prepareStatement("insert into account_info(customer_id,account_no,balance) values(?,?,?)")) {
+        try (PreparedStatement preparedStatement = con.prepareStatement("insert into account_info(customer_id,balance) values(?,?)")) {
             for (Account accounts : account) {
                 preparedStatement.setLong(1, accounts.getCustomer_id());
-                preparedStatement.setLong(2, accounts.getAccount_no());
                 preparedStatement.setFloat(3, accounts.getBalance());
                 preparedStatement.addBatch();
             }
@@ -60,9 +56,8 @@ public class DBUtil {
     //insert rows in customer table in db
     public void insertRowsInCustomerTable(ArrayList<Customer> customers) throws SQLException {
         Connection con =getConnection();
-        try (PreparedStatement preparedStatement = con.prepareStatement("insert into customer_info(customer_id,name,mail,age,phone) values(?,?,?,?,?)")) {
+        try (PreparedStatement preparedStatement = con.prepareStatement("insert into customer_info(name,mail,age,phone) values(?,?,?,?)")) {
             for (Customer customer : customers) {
-                preparedStatement.setLong(1, customer.getCustomer_id());
                 preparedStatement.setString(2, customer.getName());
                 preparedStatement.setString(3, customer.getMail());
                 preparedStatement.setInt(4, customer.getAge());
@@ -129,28 +124,17 @@ public class DBUtil {
 
     public ArrayList<Customer> getCustomersInfoFromUser()
     {
-        return newGeneralResource.getCustomersInfo();
+        return GeneralResource.getInstance().getCustomersInfo();
     }
     public ArrayList<Account> getAccountsInfoFromUser()
     {
-        return newGeneralResource.getAccountsInfo();
-    }
-        //find given customer id for given customer name and return customer_id
-    public long getCustomerIdFromCustomerHashMap(String name) {
-        //Set<Long> result=new HashSet<>();
-        for (Map.Entry<Long,String> entry:customerHashmap.entrySet()) {
-            if (Objects.equals(entry.getValue(),name)) {
-                //result.add(entry.getKey());
-                return entry.getKey();
-            }
-        }
-        return 0;
+        return GeneralResource.getInstance().getAccountsInfo();
     }
     //return value for given customer id
     public HashMap<Long, Account> getAccountsInfoFromAccountsInfoHashMap(long id) {
         return accountsInfo.get(id);
     }
-    public ArrayList<Account> getExistingCustomerVerifyForAddNewAccount(ArrayList<Account> accounts)
+    /*public ArrayList<Account> getExistingCustomerVerifyForAddNewAccount(ArrayList<Account> accounts)
     {
         ArrayList<Account> accounts1=new ArrayList<>();
         for (Account account:accounts)
@@ -167,6 +151,8 @@ public class DBUtil {
         }
         return accounts1;
     }
+
+     */
     //close db connection
     public void closeConnection(){
         if (con!=null)
