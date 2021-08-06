@@ -81,6 +81,50 @@ public class GeneralResource {   //singleton class
         }
         return accounts;
     }
+    public ArrayList<Customer>  initialiseCustomerInfo()
+    {
+        ArrayList<Customer> customers=new ArrayList<>();
+        Customer[] customerObj=new Customer[3];
+        customerObj[0].setCustomer_id(101);
+        customerObj[0].setName("mark");
+        customerObj[0].setMail("mark@gmail.com");
+        customerObj[0].setAge(21);
+        customerObj[0].setPhone(9987653131L);
+        customerObj[1].setCustomer_id(102);
+        customerObj[1].setName("vino");
+        customerObj[1].setMail("vino@gmail.com");
+        customerObj[1].setAge(22);
+        customerObj[1].setPhone(9987651131L);
+        customerObj[2].setCustomer_id(103);
+        customerObj[2].setName("abi");
+        customerObj[2].setMail("abi@gmail.com");
+        customerObj[2].setAge(21);
+        customerObj[2].setPhone(7787653131L);
+        for (Customer customer:customerObj)
+        {
+           customers.add(customer);
+         }
+        return customers;
+    }
+    public ArrayList<Account>  initialiseAccountInfo()
+    {
+        ArrayList<Account> accounts=new ArrayList<>();
+        Account[] accountObj=new Account[3];
+        accountObj[0].setCustomer_id(101L);
+        accountObj[0].setAccount_no(23415678912L);
+        accountObj[0].setBalance(150000);
+        accountObj[1].setCustomer_id(101);
+        accountObj[1].setAccount_no(44415678912L);
+        accountObj[1].setBalance(170000);
+        accountObj[2].setCustomer_id(102);
+        accountObj[2].setAccount_no(23415678111L);
+        accountObj[2].setBalance(200000);
+        for(Account account:accountObj)
+        {
+            accounts.add(account);
+        }
+        return accounts;
+    }
     public  void closeScanner()
     {
         scanner.close();
@@ -88,4 +132,6 @@ public class GeneralResource {   //singleton class
 
 
 }
+
+
 
